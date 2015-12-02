@@ -35,7 +35,7 @@
             android:layout_toRightOf="@+id/chefImg"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@color/colorText"
+            android:background="@color/colorOrangeTheme"
             android:textSize="15sp"
             android:padding="10dp" />
 

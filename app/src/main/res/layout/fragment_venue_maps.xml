@@ -10,21 +10,22 @@
         android:layout_weight="10">
 
         <TextView
+            android:id="@+id/venueMapLbl"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_centerInParent="true"
             android:background="@drawable/greybar"
             android:gravity="center"
             android:text="@string/venue_map"
-            android:textColor="@color/colorText"
+            android:textColor="@color/colorOrangeTheme"
             android:textSize="25sp">
 
         </TextView>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/colorText"
+            android:layout_height="@dimen/orange_bar_height"
+            android:background="@color/colorOrangeTheme"
             android:layout_alignParentBottom="true"></RelativeLayout>
 
     </RelativeLayout>

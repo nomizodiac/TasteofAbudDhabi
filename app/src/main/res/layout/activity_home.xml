@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="92">
+        android:layout_weight="90">
 
         <RelativeLayout
             android:id="@+id/fragmentsContainerLayout"
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText"
+            android:background="@color/colorOrangeTheme"
             android:orientation="horizontal"
             android:visibility="gone">
 
@@ -40,8 +40,8 @@
                 android:text="@string/schedule"
                 android:textColor="@color/white"
                 android:textSize="10sp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingTop="@dimen/menu_shortcut_layout_item_padding_top"
+                android:paddingBottom="@dimen/menu_shortcut_layout_item_padding_bottom" />
 
             <View
                 android:layout_width="0.5dp"
@@ -59,8 +59,8 @@
                 android:text="@string/chefs"
                 android:textColor="@color/white"
                 android:textSize="10sp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingTop="@dimen/menu_shortcut_layout_item_padding_top"
+                android:paddingBottom="@dimen/menu_shortcut_layout_item_padding_bottom" />
 
             <View
                 android:layout_width="0.5dp"
@@ -78,8 +78,8 @@
                 android:text="@string/restaurants"
                 android:textColor="@color/white"
                 android:textSize="10sp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingTop="@dimen/menu_shortcut_layout_item_padding_top"
+                android:paddingBottom="@dimen/menu_shortcut_layout_item_padding_bottom" />
 
             <View
                 android:layout_width="0.5dp"
@@ -97,20 +97,17 @@
                 android:text="@string/venue_map"
                 android:textColor="@color/white"
                 android:textSize="10sp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingTop="@dimen/menu_shortcut_layout_item_padding_top"
+                android:paddingBottom="@dimen/menu_shortcut_layout_item_padding_bottom" />
 
         </LinearLayout>
-
-
     </RelativeLayout>
-
 
     <RelativeLayout
         android:id="@+id/bottomBarLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8"
+        android:layout_weight="10"
         android:background="@drawable/greybar">
 
         <ImageButton
@@ -118,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="@dimen/activity_margin_left"
             android:background="@drawable/back_button" />
 
         <ImageButton
@@ -127,23 +124,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="@dimen/activity_margin_right"
             android:background="@drawable/menu" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/orange_bar_height"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText">
-
-
+            android:background="@color/colorOrangeTheme">
         </RelativeLayout>
 
-        <!--<include
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout="@layout/seperator_oragnebar"
-            android:layout_alignParentBottom="true"/>-->
 
     </RelativeLayout>
 

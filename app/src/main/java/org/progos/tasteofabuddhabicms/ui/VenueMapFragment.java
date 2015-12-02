@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.progos.tasteofabuddhabicms.R;
+import org.progos.tasteofabuddhabicms.utility.Commons;
+import org.progos.tasteofabuddhabicms.utility.FontFactory;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
@@ -22,6 +24,7 @@ public class VenueMapFragment extends Fragment {
 
     Context context;
     ImageViewTouch mImage;
+    TextView venueMapLbl;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,5 +42,8 @@ public class VenueMapFragment extends Fragment {
     private void uInit(View view) {
 
         mImage = (ImageViewTouch) view.findViewById(R.id.image);
+        venueMapLbl = (TextView) view.findViewById(R.id.venueMapLbl);
+
+        venueMapLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_BOLD));
     }
 }

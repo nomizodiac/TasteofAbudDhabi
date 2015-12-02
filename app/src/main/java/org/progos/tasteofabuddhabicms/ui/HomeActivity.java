@@ -1,6 +1,7 @@
 package org.progos.tasteofabuddhabicms.ui;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,7 @@ import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.Strings;
+import org.progos.tasteofabuddhabicms.utility.Utils;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,7 +34,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_home);
         context = HomeActivity.this;
         uInit();
-
         loadMenuFragment();
     }
 
@@ -128,5 +129,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         chefsBtn.setOnClickListener(this);
         restaurantsBtn.setOnClickListener(this);
         venueMapBtn.setOnClickListener(this);
+
     }
 }

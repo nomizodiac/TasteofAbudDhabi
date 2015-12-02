@@ -14,7 +14,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:text="4:00pm - 4:30pm"
-        android:textColor="@color/colorText"
+        android:textColor="@color/colorOrangeTheme"
         android:textSize="15sp" />
 
     <TextView
@@ -27,7 +27,7 @@
         android:gravity="center"
         android:padding="13dp"
         android:text="Leading Lights Productions"
-        android:textColor="@color/colorText"
+        android:textColor="@color/colorOrangeTheme"
         android:textSize="15sp" />
 
 </LinearLayout>

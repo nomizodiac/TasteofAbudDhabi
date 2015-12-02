@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/chefs"
-        android:textColor="@color/colorText"
+        android:textColor="@color/colorOrangeTheme"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/chefsBanner"
         android:layout_marginTop="15dp"
@@ -36,7 +36,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:text="@string/chefs_description"
-        android:textColor="@color/colorText"
+        android:textColor="@color/colorOrangeTheme"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/chefsHeadingLbl"
         android:textSize="14sp" />

@@ -36,7 +36,7 @@
         android:background="@drawable/greybar"
         android:gravity="center"
         android:text="@string/taste_of_abu_dhabi_heading"
-        android:textColor="@color/colorText"
+        android:textColor="@color/colorOrangeTheme"
         android:textSize="25sp"></TextView>
 
     <RelativeLayout
@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:layout_below="@+id/greyBarTxt"
-        android:background="@color/colorText"></RelativeLayout>
+        android:background="@color/colorOrangeTheme"></RelativeLayout>
 
     <ImageView
         android:id="@+id/leafDivider"

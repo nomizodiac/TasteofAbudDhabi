@@ -16,10 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="75"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:src="@drawable/home_banner" />
 
         <TextView
+            android:id="@+id/logoLbl"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_centerInParent="true"
@@ -27,16 +28,16 @@
             android:background="@drawable/greybar"
             android:gravity="center"
             android:text="@string/taste_of_abu_dhabi_heading"
-            android:textColor="@color/colorText"
+            android:textColor="@color/colorOrangeTheme"
             android:textSize="25sp">
 
         </TextView>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/orange_bar_height"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText">
+            android:background="@color/colorOrangeTheme">
 
         </RelativeLayout>
 
@@ -48,7 +49,7 @@
         android:layout_height="0dp"
         android:layout_weight="60"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:padding="@dimen/menu_layout_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,7 +77,7 @@
                         android:drawableTop="@drawable/resturant"
                         android:gravity="center_horizontal"
                         android:text="@string/restaurants"
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorOrangeTheme" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -92,7 +93,7 @@
                         android:drawableTop="@drawable/map"
                         android:gravity="center"
                         android:text="@string/venue_map"
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorOrangeTheme" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -116,7 +117,7 @@
                         android:drawableTop="@drawable/calander"
                         android:gravity="center_horizontal"
                         android:text="@string/schedule"
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorOrangeTheme" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -132,7 +133,7 @@
                         android:drawableTop="@drawable/chef"
                         android:gravity="center_horizontal"
                         android:text="@string/chefs"
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorOrangeTheme" />
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
