@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Taste of Abud Dhabi</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="taste_of_abu_dhabi_heading">#TASTEOFABUDHABI</string>
+    <string name="restaurants">RESTAURANTS</string>
+    <string name="restaurants_description">Taste of Abu Dhabi is the capitals favourite food, drink and music festival. The festival will be a food-lover’s fantasy, jam packed with 25 exclusive fine-dining restaurants. This year we have 11 new restaurants to tantalize your taste buds! You are sure to be able to Taste your way around the world with our Japanese, Arabic, South Indian, European and Italian restaurants.</string>
+    <string name="venue_map">VENUE MAP</string>
+    <string name="schedule">SCHEDULE</string>
+    <string name="entertainment_schedule">ENTERTAINMENT SCHEDULE</string>
+    <string name="chefs">CHEFS</string>
+    <string name="chefs_description">Taste of Abu Dhabi boasts some of the UAE’s finest and international chefs. Watch them cooking live on  stage at the OSN Chefs Theatre and the Quooker and Lurpak Cookery School.</string>
+
+    <string name="time">Time</string>
+    <string name="act">Act</string>
+
+
+</resources>
