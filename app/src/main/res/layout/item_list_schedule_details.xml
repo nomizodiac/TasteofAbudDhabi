@@ -18,7 +18,7 @@
         android:textSize="15sp" />
 
     <TextView
-        android:id="@+id/actLbl"
+        android:id="@+id/actTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingLeft="5dp"

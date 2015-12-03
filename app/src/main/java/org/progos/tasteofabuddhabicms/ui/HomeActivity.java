@@ -16,6 +16,7 @@ import android.widget.TextView;
 import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
 import org.progos.tasteofabuddhabicms.utility.Commons;
+import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Strings;
 import org.progos.tasteofabuddhabicms.utility.Utils;
 
@@ -130,5 +131,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         restaurantsBtn.setOnClickListener(this);
         venueMapBtn.setOnClickListener(this);
 
+        scheduleBtn.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
+        chefsBtn.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
+        restaurantsBtn.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
+        venueMapBtn.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
     }
 }

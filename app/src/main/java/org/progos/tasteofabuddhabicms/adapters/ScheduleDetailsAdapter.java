@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by NomBhatti on 11/26/2015.
  */
-public class ScheduleDetailsAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
+public class ScheduleDetailsAdapter extends RecyclerView.Adapter<ScheduleDetailsViewHolder> {
 
     private static final int ITEM_VIEW_TYPE_HEADER = 0;
     private static final int ITEM_VIEW_TYPE_ITEM = 1;
@@ -31,7 +31,7 @@ public class ScheduleDetailsAdapter extends RecyclerView.Adapter<ScheduleViewHol
             throw new IllegalArgumentException("header may not be null");
         }
         this.header = header;
-        this.labels = new ArrayList<String>(count);
+        this.labels = new ArrayList<>(count);
         for (int i = 0; i < count; ++i) {
             labels.add(String.valueOf(i));
         }
@@ -42,16 +42,16 @@ public class ScheduleDetailsAdapter extends RecyclerView.Adapter<ScheduleViewHol
     }
 
     @Override
-    public ScheduleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ScheduleDetailsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ITEM_VIEW_TYPE_HEADER) {
-            return new ScheduleViewHolder(header);
+            return new ScheduleDetailsViewHolder(context, header);
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_schedule_details, parent, false);
-        return new ScheduleViewHolder(view);
+        return new ScheduleDetailsViewHolder(context, view);
     }
 
     @Override
-    public void onBindViewHolder(final ScheduleViewHolder holder, final int position) {
+    public void onBindViewHolder(final ScheduleDetailsViewHolder holder, final int position) {
         if (isHeader(position)) {
             return;
         }

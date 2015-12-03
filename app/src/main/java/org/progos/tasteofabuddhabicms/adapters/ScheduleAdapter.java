@@ -49,10 +49,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
     @Override
     public ScheduleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ITEM_VIEW_TYPE_HEADER) {
-            return new ScheduleViewHolder(header);
+            return new ScheduleViewHolder(context, header);
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_schedule, parent, false);
-        return new ScheduleViewHolder(view);
+        return new ScheduleViewHolder(context, view);
     }
 
     @Override

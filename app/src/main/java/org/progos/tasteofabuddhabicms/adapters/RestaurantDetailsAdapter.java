@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by NomBhatti on 11/26/2015.
  */
-public class RestaurantDetailsAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
+public class RestaurantDetailsAdapter extends RecyclerView.Adapter<RestaurantDetailsViewHolder> {
 
     private static final int ITEM_VIEW_TYPE_HEADER = 0;
     private static final int ITEM_VIEW_TYPE_ITEM = 1;
@@ -42,16 +42,16 @@ public class RestaurantDetailsAdapter extends RecyclerView.Adapter<ScheduleViewH
     }
 
     @Override
-    public ScheduleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RestaurantDetailsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ITEM_VIEW_TYPE_HEADER) {
-            return new ScheduleViewHolder(header);
+            return new RestaurantDetailsViewHolder(context, header);
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_restaurant_details, parent, false);
-        return new ScheduleViewHolder(view);
+        return new RestaurantDetailsViewHolder(context, view);
     }
 
     @Override
-    public void onBindViewHolder(final ScheduleViewHolder holder, final int position) {
+    public void onBindViewHolder(final RestaurantDetailsViewHolder holder, final int position) {
         if (isHeader(position)) {
             return;
         }

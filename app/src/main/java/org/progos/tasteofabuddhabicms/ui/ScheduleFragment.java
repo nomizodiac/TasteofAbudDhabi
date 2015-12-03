@@ -29,6 +29,8 @@ import org.progos.tasteofabuddhabicms.adapters.ChefsAdapter;
 import org.progos.tasteofabuddhabicms.adapters.ScheduleAdapter;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
 import org.progos.tasteofabuddhabicms.model.Schedule;
+import org.progos.tasteofabuddhabicms.utility.Commons;
+import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Utils;
 import org.progos.tasteofabuddhabicms.webservices.Urls;
 
@@ -59,12 +61,8 @@ public class ScheduleFragment extends Fragment {
         scheduleList.setLayoutManager(new LinearLayoutManager(context));
 
         View header = LayoutInflater.from(context).inflate(R.layout.header_list_schedule, scheduleList, false);
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "grid_layout_header", Toast.LENGTH_SHORT).show();
-            }
-        });
+        TextView scheduleHeadingLbl = (TextView) header.findViewById(R.id.scheduleHeadingLbl);
+        scheduleHeadingLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
 
         adapter = new ScheduleAdapter(context, header, schedules);
         scheduleList.setAdapter(adapter);

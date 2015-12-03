@@ -51,10 +51,10 @@ public class ChefsAdapter extends RecyclerView.Adapter<ChefViewHolder> {
     @Override
     public ChefViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ITEM_VIEW_TYPE_HEADER) {
-            return new ChefViewHolder(header);
+            return new ChefViewHolder(context, header);
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_chefs, parent, false);
-        return new ChefViewHolder(view);
+        return new ChefViewHolder(context, view);
     }
 
     @Override

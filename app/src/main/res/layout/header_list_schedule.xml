@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp">
+
+    <ImageView
+        android:id="@+id/restaurantsBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/restaurants_banner" />
 
     <ImageView
         android:id="@+id/scheduleImg"
@@ -9,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:src="@drawable/calander"
+        android:layout_below="@+id/restaurantsBanner"
         android:layout_marginTop="35dp"
         android:scaleType="fitXY" />
 
@@ -22,6 +30,6 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/scheduleImg"
         android:layout_marginTop="20dp"
-        android:textSize="25sp" />
+        android:textSize="30sp" />
 
 </RelativeLayout>

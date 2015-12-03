@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp">
 
     <ImageView
         android:id="@+id/chefsBanner"
@@ -19,9 +20,9 @@
         android:textColor="@color/colorOrangeTheme"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/chefsBanner"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:drawableRight="@drawable/chef_detail_icon"
         android:drawablePadding="10dp"
         android:textSize="25sp" />
@@ -31,10 +32,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
         android:text="@string/chefs_description"
         android:textColor="@color/colorOrangeTheme"
         android:layout_centerHorizontal="true"

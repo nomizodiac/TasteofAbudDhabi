@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -25,6 +26,8 @@ import org.progos.tasteofabuddhabicms.AppController;
 import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.adapters.RestaurantsAdapter;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
+import org.progos.tasteofabuddhabicms.utility.Commons;
+import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Utils;
 import org.progos.tasteofabuddhabicms.webservices.Urls;
 
@@ -56,12 +59,10 @@ public class RestaurantsFragment extends Fragment {
         restaurantsList.setLayoutManager(manager);
 
         View header = LayoutInflater.from(context).inflate(R.layout.header_list_restaurants, restaurantsList, false);
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "grid_layout_header", Toast.LENGTH_SHORT).show();
-            }
-        });
+        TextView restaurantsHeadingLbl = (TextView) header.findViewById(R.id.restaurantsHeadingLbl);
+        TextView restaurantsDescription = (TextView) header.findViewById(R.id.restaurantsDescription);
+        restaurantsHeadingLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
+        restaurantsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
 
         adapter = new RestaurantsAdapter(context, header, restaurants);
         restaurantsList.setAdapter(adapter);
@@ -126,5 +127,6 @@ public class RestaurantsFragment extends Fragment {
 
         restaurantsList = (RecyclerView) view.findViewById(R.id.restaurantsList);
         restaurantsListProgress = (ProgressBar) view.findViewById(R.id.restaurantsListProgress);
+
     }
 }
