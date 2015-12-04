@@ -1,6 +1,7 @@
 package org.progos.tasteofabuddhabicms.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -76,7 +77,12 @@ public class ChefsAdapter extends RecyclerView.Adapter<ChefViewHolder> {
                     Fragment fragment = fm.findFragmentByTag(Strings.FRAGMENT_CHEFS);
                     if (fragment instanceof ChefsFragment) {
                         ft.hide(fragment);
-                        ft.add(R.id.fragmentsContainerLayout, new ChefDetailsFragment());
+
+                        Bundle args = new Bundle();
+                        args.putSerializable(Strings.CHEF_OBJ, chef);
+                        ChefDetailsFragment chefDetailsFragment = new ChefDetailsFragment();
+                        chefDetailsFragment.setArguments(args);
+                        ft.add(R.id.fragmentsContainerLayout, chefDetailsFragment);
                         ft.addToBackStack(null);
                         ft.commit();
                     }

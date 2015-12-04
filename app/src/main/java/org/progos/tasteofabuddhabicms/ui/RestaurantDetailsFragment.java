@@ -21,19 +21,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.progos.tasteofabuddhabicms.AppController;
 import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.adapters.RestaurantDetailsAdapter;
 import org.progos.tasteofabuddhabicms.adapters.ScheduleAdapter;
+import org.progos.tasteofabuddhabicms.model.RestaurantItem;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.Strings;
 import org.progos.tasteofabuddhabicms.utility.Utils;
 import org.progos.tasteofabuddhabicms.webservices.Urls;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +51,7 @@ public class RestaurantDetailsFragment extends Fragment {
     Context context;
     RecyclerView restaurantDetailsList;
     ProgressBar restaurantsListProgress;
+    ArrayList<RestaurantItem> restaurantItems;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,17 +61,13 @@ public class RestaurantDetailsFragment extends Fragment {
 
         String restaurantId = getArguments().getString(Strings.RESTAURANT_ID);
 
+        restaurantItems = new ArrayList<>();
         //restaurantsList.addItemDecoration(new MarginDecoration(this));
         restaurantDetailsList.setHasFixedSize(true);
         restaurantDetailsList.setLayoutManager(new LinearLayoutManager(context));
 
         View header = LayoutInflater.from(context).inflate(R.layout.header_list_restaurant_details, restaurantDetailsList, false);
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "grid_layout_header", Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
         final RestaurantDetailsAdapter adapter = new RestaurantDetailsAdapter(context, header, 30);
         restaurantDetailsList.setAdapter(adapter);
@@ -80,24 +81,39 @@ public class RestaurantDetailsFragment extends Fragment {
     private void loadRestaurantDetails(String restaurantId) {
 
         Log.d(TAG, Strings.RESTAURANT_ID + " :" + restaurantId);
-        String url = Urls.base_url + "posts/" + restaurantId + "/meta";
-
-        RestaurantsDetailsRequest jsonObjReq = new RestaurantsDetailsRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        String url = Urls.base_url + "posts/" + restaurantId;
+        JsonObjectRequest req = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d(TAG, "Response-RestaurantDetails: " + response.toString());
+                parseRestaurantDetailsResponse(response);
                 restaurantsListProgress.setVisibility(View.GONE);
                 restaurantDetailsList.setVisibility(View.VISIBLE);
-
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                VolleyLog.e("Error: ", error.getMessage());
             }
         });
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
+
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+    private void parseRestaurantDetailsResponse(JSONObject response) {
+
+        try {
+            JSONObject jsonObject = response.getJSONObject("postmeta_data");
+            JSONArray itemTitlesJsonArray = jsonObject.getJSONArray("item_title");
+            JSONArray itemDescriptionsJsonArray = jsonObject.getJSONArray("item_description");
+            JSONArray itemPricesJsonArray = jsonObject.getJSONArray("item_price");
+            JSONArray itemCatsJsonArray = jsonObject.getJSONArray("item_cat");
+            String hasCat = jsonObject.getString("has_cat");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public class RestaurantsDetailsRequest extends JsonObjectRequest {

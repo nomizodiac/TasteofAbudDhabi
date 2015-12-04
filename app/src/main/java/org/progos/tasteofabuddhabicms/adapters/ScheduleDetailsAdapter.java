@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.progos.tasteofabuddhabicms.R;
+import org.progos.tasteofabuddhabicms.model.Schedule;
+import org.progos.tasteofabuddhabicms.model.ScheduleItem;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by NomBhatti on 11/26/2015.
@@ -19,22 +21,19 @@ public class ScheduleDetailsAdapter extends RecyclerView.Adapter<ScheduleDetails
     private static final int ITEM_VIEW_TYPE_HEADER = 0;
     private static final int ITEM_VIEW_TYPE_ITEM = 1;
 
-    private final View header;
-    private final List<String> labels;
+    private View header;
+    ArrayList<ScheduleItem> scheduleItems;
 
     private Context context;
 
-    public ScheduleDetailsAdapter(Context context, View header, int count) {
+    public ScheduleDetailsAdapter(Context context, View header, ArrayList<ScheduleItem> scheduleItems) {
 
         this.context = context;
         if (header == null) {
             throw new IllegalArgumentException("header may not be null");
         }
         this.header = header;
-        this.labels = new ArrayList<>(count);
-        for (int i = 0; i < count; ++i) {
-            labels.add(String.valueOf(i));
-        }
+        this.scheduleItems = scheduleItems;
     }
 
     public boolean isHeader(int position) {
@@ -55,10 +54,9 @@ public class ScheduleDetailsAdapter extends RecyclerView.Adapter<ScheduleDetails
         if (isHeader(position)) {
             return;
         }
-        final String label = labels.get(position - 1);  // Subtract 1 for header
-        /*holder..setText(label);
-        Drawable drawable = context.getResources().getDrawable(context.getResources().getIdentifier("rest_01", "drawable", context.getPackageName()));
-        Utils.setBackground(holder.chefImg, drawable);*/
+        final ScheduleItem scheduleItem = scheduleItems.get(position - 1);
+        holder.timeTextView.setText(scheduleItem.getTime());
+        holder.actTextView.setText(scheduleItem.getAct());
     }
 
     @Override
@@ -68,7 +66,7 @@ public class ScheduleDetailsAdapter extends RecyclerView.Adapter<ScheduleDetails
 
     @Override
     public int getItemCount() {
-        return labels.size() + 1;
+        return scheduleItems.size() + 1;
     }
 
 

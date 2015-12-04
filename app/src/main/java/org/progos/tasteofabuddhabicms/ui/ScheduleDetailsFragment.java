@@ -5,15 +5,31 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.progos.tasteofabuddhabicms.AppController;
 import org.progos.tasteofabuddhabicms.R;
-import org.progos.tasteofabuddhabicms.adapters.RestaurantDetailsAdapter;
 import org.progos.tasteofabuddhabicms.adapters.ScheduleDetailsAdapter;
+import org.progos.tasteofabuddhabicms.model.Schedule;
+import org.progos.tasteofabuddhabicms.model.ScheduleItem;
+import org.progos.tasteofabuddhabicms.utility.Strings;
+import org.progos.tasteofabuddhabicms.utility.Utils;
+import org.progos.tasteofabuddhabicms.webservices.Urls;
+
+import java.util.ArrayList;
 
 /**
  * Created by NomBhatti on 11/25/2015.
@@ -23,6 +39,10 @@ public class ScheduleDetailsFragment extends Fragment {
     Context context;
     RecyclerView scheduleDetailsList;
     ProgressBar scheduleListProgress;
+    ScheduleDetailsAdapter adapter;
+    ArrayList<ScheduleItem> scheduleItems;
+
+    private final String TAG = getClass().getSimpleName();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,26 +50,80 @@ public class ScheduleDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         uInit(view);
 
+        Schedule schedule = (Schedule) getArguments().getSerializable(Strings.SCHEDULE_OBJ);
 
+        scheduleItems = new ArrayList<>();
         //restaurantsList.addItemDecoration(new MarginDecoration(this));
         scheduleDetailsList.setHasFixedSize(true);
         scheduleDetailsList.setLayoutManager(new LinearLayoutManager(context));
 
         View header = LayoutInflater.from(context).inflate(R.layout.header_list_schedule_details, scheduleDetailsList, false);
-        header.setOnClickListener(new View.OnClickListener() {
+        TextView dayTextView = (TextView) header.findViewById(R.id.dayTextView);
+        TextView dateTextView = (TextView) header.findViewById(R.id.dateTextView);
+        dayTextView.setText(schedule.getDay());
+        dateTextView.setText(schedule.getDate());
+
+        adapter = new ScheduleDetailsAdapter(context, header, scheduleItems);
+        scheduleDetailsList.setAdapter(adapter);
+
+        if (Utils.hasConnection(context))
+            loadScheduleDetails(schedule.getSlug());
+
+        return view;
+    }
+
+    private void loadScheduleDetails(String slug) {
+
+        String url = "posts?type[]=schedules&filter[taxonomy]=schedulecat&filter[term]=" + slug;
+        JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "grid_layout_header", Toast.LENGTH_SHORT).show();
+            public void onResponse(JSONArray response) {
+                Log.d(TAG, "Response-ScheduleDetails: " + response.toString());
+                parseScheduleDetailsResponse(response);
+                adapter.notifyDataSetChanged();
+                scheduleListProgress.setVisibility(View.GONE);
+                scheduleDetailsList.setVisibility(View.VISIBLE);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
 
-        final ScheduleDetailsAdapter adapter = new ScheduleDetailsAdapter(context, header, 30);
-        scheduleDetailsList.setAdapter(adapter);
+        AppController.getInstance().addToRequestQueue(req);
 
-        scheduleListProgress.setVisibility(View.GONE);
-        scheduleDetailsList.setVisibility(View.VISIBLE);
+    }
 
-        return view;
+    private void parseScheduleDetailsResponse(JSONArray response) {
+
+        scheduleItems.clear();
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                JSONObject jsonObject = response.getJSONObject(i);
+                JSONObject postMetaDataJsonObject = jsonObject.getJSONObject("postmeta_data");
+
+                JSONArray postMetaDataColumn1 = postMetaDataJsonObject.getJSONArray("column1");
+                String[] postMetaDataColumn1Array = new String[postMetaDataColumn1.length()];
+                for (int j = 0; j < postMetaDataColumn1.length(); j++) {
+                    postMetaDataColumn1Array[j] = postMetaDataColumn1.getString(j);
+                }
+                JSONArray postMetaDataColumn2 = postMetaDataJsonObject.getJSONArray("column2");
+                String[] postMetaDataColumn2Array = new String[postMetaDataColumn2.length()];
+                for (int k = 0; k < postMetaDataColumn2.length(); k++) {
+                    postMetaDataColumn2Array[k] = postMetaDataColumn2.getString(k);
+                }
+
+                for (int l = 0; l < postMetaDataColumn1.length(); l++) {
+                    ScheduleItem scheduleItem = new ScheduleItem(postMetaDataColumn1Array[l], postMetaDataColumn2Array[l]);
+                    scheduleItems.add(scheduleItem);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private void uInit(View view) {

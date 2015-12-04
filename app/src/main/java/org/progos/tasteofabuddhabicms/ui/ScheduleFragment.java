@@ -29,12 +29,14 @@ import org.progos.tasteofabuddhabicms.adapters.ChefsAdapter;
 import org.progos.tasteofabuddhabicms.adapters.ScheduleAdapter;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
 import org.progos.tasteofabuddhabicms.model.Schedule;
+import org.progos.tasteofabuddhabicms.model.ScheduleItem;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Utils;
 import org.progos.tasteofabuddhabicms.webservices.Urls;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by NomBhatti on 11/25/2015.
@@ -75,7 +77,7 @@ public class ScheduleFragment extends Fragment {
 
     private void loadSchedules() {
 
-        String url = "posts?type[]=schedules";
+        String url = "taxonomies/schedulecat/terms";
 
         JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
             @Override
@@ -102,12 +104,11 @@ public class ScheduleFragment extends Fragment {
             try {
                 JSONObject jsonObject = response.getJSONObject(i);
                 String scheduleId = jsonObject.getString("ID");
-                String date = jsonObject.getString("date");
-                JSONObject termsJsonObj = jsonObject.getJSONObject("terms");
-                JSONArray scheduleCatJsonArray = termsJsonObj.getJSONArray("schedulecat");
-                JSONObject scheduleCatJsonObj = scheduleCatJsonArray.getJSONObject(0);
-                String day = scheduleCatJsonObj.getString("name");
-                Schedule schedule = new Schedule(scheduleId, day, date);
+                String slug = jsonObject.getString("slug");
+                String day = jsonObject.getString("name");
+                JSONObject dateObj = jsonObject.getJSONObject("schedule_date");
+                String date = dateObj.getString("date_sch");
+                Schedule schedule = new Schedule(scheduleId, slug, day, date);
                 schedules.add(schedule);
 
             } catch (JSONException e) {
@@ -115,6 +116,48 @@ public class ScheduleFragment extends Fragment {
             }
         }
     }
+
+    /*private void parseSchedulesResponse(JSONArray response) {
+
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                JSONObject jsonObject = response.getJSONObject(i);
+                JSONObject termsObject = jsonObject.getJSONObject("terms");
+                JSONArray scheduleCatJsonArray = termsObject.getJSONArray("schedulecat");
+                JSONObject scheduleCatJsonObj = scheduleCatJsonArray.getJSONObject(0);
+                String scheduleId = scheduleCatJsonObj.getString("ID");
+                String day = scheduleCatJsonObj.getString("name");
+                JSONObject dateObj = scheduleCatJsonObj.getJSONObject("schedule_date");
+                String date = dateObj.getString("date_sch");
+
+                JSONObject postMetaDataJsonObject = jsonObject.getJSONObject("postmeta_data");
+
+                JSONArray postMetaDataColumn1 = postMetaDataJsonObject.getJSONArray("column1");
+                String[] postMetaDataColumn1Array = new String[postMetaDataColumn1.length()];
+                for (int j = 0; j < postMetaDataColumn1.length(); j++) {
+                    postMetaDataColumn1Array[j] = postMetaDataColumn1.getString(j);
+                }
+                JSONArray postMetaDataColumn2 = postMetaDataJsonObject.getJSONArray("column2");
+                String[] postMetaDataColumn2Array = new String[postMetaDataColumn2.length()];
+                for (int k = 0; k < postMetaDataColumn1.length(); k++) {
+                    postMetaDataColumn2Array[k] = postMetaDataColumn2.getString(k);
+                }
+
+                ArrayList<ScheduleItem> scheduleItems = new ArrayList<>();
+                for(int l=0; i<postMetaDataColumn1.length(); l++)
+                {
+                    ScheduleItem scheduleItem = new ScheduleItem(postMetaDataColumn1Array[i], postMetaDataColumn2Array[i]);
+                    scheduleItems.add(scheduleItem);
+                }
+
+                Schedule schedule = new Schedule(scheduleId, day, date, scheduleItems);
+                schedules.add(schedule);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }*/
 
 
     private void uInit(View view) {

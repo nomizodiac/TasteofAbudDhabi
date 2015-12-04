@@ -1,6 +1,7 @@
 package org.progos.tasteofabuddhabicms.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.progos.tasteofabuddhabicms.R;
+import org.progos.tasteofabuddhabicms.ui.ChefDetailsFragment;
 import org.progos.tasteofabuddhabicms.ui.ChefsFragment;
 import org.progos.tasteofabuddhabicms.ui.ScheduleDetailsFragment;
 import org.progos.tasteofabuddhabicms.model.Schedule;
@@ -73,7 +75,11 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
                     Fragment fragment = fm.findFragmentByTag(Strings.FRAGMENT_SCHEDULE);
                     if (fragment instanceof ScheduleFragment) {
                         ft.hide(fragment);
-                        ft.add(R.id.fragmentsContainerLayout, new ScheduleDetailsFragment());
+                        Bundle args = new Bundle();
+                        args.putSerializable(Strings.SCHEDULE_OBJ, schedule);
+                        ScheduleDetailsFragment scheduleDetailsFragment = new ScheduleDetailsFragment();
+                        scheduleDetailsFragment.setArguments(args);
+                        ft.add(R.id.fragmentsContainerLayout, scheduleDetailsFragment);
                         ft.addToBackStack(null);
                         ft.commit();
                     }

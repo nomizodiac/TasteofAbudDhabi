@@ -1,16 +1,22 @@
 package org.progos.tasteofabuddhabicms.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by NomBhatti on 11/30/2015.
  */
-public class Schedule {
+public class Schedule implements Serializable {
 
     String id;
+    String slug;
     String day;
     String date;
 
-    public Schedule(String id, String day, String date) {
+    public Schedule(String id, String slug, String day, String date) {
         this.id = id;
+        this.slug = slug;
         this.day = day;
         this.date = date;
     }
@@ -21,6 +27,14 @@ public class Schedule {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public String getDay() {

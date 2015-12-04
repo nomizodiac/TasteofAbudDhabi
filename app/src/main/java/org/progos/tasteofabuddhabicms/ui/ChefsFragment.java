@@ -88,7 +88,7 @@ public class ChefsFragment extends Fragment {
         JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.d(TAG, "Response-Restaurants: " + response.toString());
+                Log.d(TAG, "Response-Chefs: " + response.toString());
                 parseChefsResponse(response);
                 adapter.notifyDataSetChanged();
                 chefsListProgress.setVisibility(View.GONE);
@@ -114,8 +114,9 @@ public class ChefsFragment extends Fragment {
                 String chefName = jsonObject.getString("title");
                 JSONObject imageJsonObj = jsonObject.getJSONObject("featured_image");
                 String imageUrl = imageJsonObj.getString("guid");
+                String description = jsonObject.getString("content");
 
-                Chef chef = new Chef(chefId, chefName, imageUrl);
+                Chef chef = new Chef(chefId, chefName, imageUrl, description);
                 chefs.add(chef);
 
             } catch (JSONException e) {

@@ -1,18 +1,22 @@
 package org.progos.tasteofabuddhabicms.model;
 
+import java.io.Serializable;
+
 /**
  * Created by NomBhatti on 11/30/2015.
  */
-public class Chef {
+public class Chef implements Serializable {
 
     String id;
     String name;
     String imageUrl;
+    String description;
 
-    public Chef(String id, String name, String imageUrl) {
+    public Chef(String id, String name, String imageUrl, String description) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.description = description;
     }
 
     public String getId() {
@@ -37,5 +41,13 @@ public class Chef {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

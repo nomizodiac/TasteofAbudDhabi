@@ -6,6 +6,9 @@ package org.progos.tasteofabuddhabicms.utility;
 public class Strings {
 
     public static String RESTAURANT_ID = "RestaurantId";
+    public static String SCHEDULE_ID = "ScheduleId";
+    public static String CHEF_OBJ = "ChefObj";
+    public static String SCHEDULE_OBJ = "ScheduleObj";
 
     public static String FRAGMENT_MENU = "MenuFragment";
     public static String FRAGMENT_RESTAURANTS = "RestaurantsFragment";
