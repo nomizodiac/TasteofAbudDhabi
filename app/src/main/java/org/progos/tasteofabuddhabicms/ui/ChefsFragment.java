@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,8 @@ public class ChefsFragment extends Fragment {
     ChefsAdapter adapter;
     ArrayList<Chef> chefs;
     ProgressBar chefsListProgress;
+    RelativeLayout connectionLostLayout;
+    TextView connectionLostTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,34 +78,46 @@ public class ChefsFragment extends Fragment {
             }
         });
 
-        if (Utils.hasConnection(context))
-            loadChefs();
+        connectionLostLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadChefs();
+            }
+        });
+
+        loadChefs();
 
         return view;
     }
 
     private void loadChefs() {
 
-        String url = "posts?type[]=chefs";
+        if (!Utils.hasConnection(context)) {
+            chefsListProgress.setVisibility(View.GONE);
+            chefsList.setVisibility(View.GONE);
+            connectionLostLayout.setVisibility(View.VISIBLE);
+        } else {
+            connectionLostLayout.setVisibility(View.GONE);
+            chefsListProgress.setVisibility(View.VISIBLE);
+            String url = "posts?type[]=chefs";
+            JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    Log.d(TAG, "Response-Chefs: " + response.toString());
+                    parseChefsResponse(response);
+                    adapter.notifyDataSetChanged();
+                    chefsListProgress.setVisibility(View.GONE);
+                    chefsList.setVisibility(View.VISIBLE);
 
-        JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                Log.d(TAG, "Response-Chefs: " + response.toString());
-                parseChefsResponse(response);
-                adapter.notifyDataSetChanged();
-                chefsListProgress.setVisibility(View.GONE);
-                chefsList.setVisibility(View.VISIBLE);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        });
-
-        AppController.getInstance().addToRequestQueue(req);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                }
+            });
+            AppController.getInstance().addToRequestQueue(req);
+        }
     }
 
     private void parseChefsResponse(JSONArray response) {
@@ -131,6 +146,9 @@ public class ChefsFragment extends Fragment {
 
         chefsList = (RecyclerView) view.findViewById(R.id.chefsList);
         chefsListProgress = (ProgressBar) view.findViewById(R.id.chefsListProgress);
+        connectionLostLayout = (RelativeLayout) view.findViewById(R.id.connectionLostLayout);
+        connectionLostTextView = (TextView) view.findViewById(R.id.connectionLostTextView);
+        connectionLostTextView.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
 
     }
 }

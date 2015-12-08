@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -25,6 +26,8 @@ import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.adapters.ScheduleDetailsAdapter;
 import org.progos.tasteofabuddhabicms.model.Schedule;
 import org.progos.tasteofabuddhabicms.model.ScheduleItem;
+import org.progos.tasteofabuddhabicms.utility.Commons;
+import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Strings;
 import org.progos.tasteofabuddhabicms.utility.Utils;
 import org.progos.tasteofabuddhabicms.webservices.Urls;
@@ -41,6 +44,8 @@ public class ScheduleDetailsFragment extends Fragment {
     ProgressBar scheduleListProgress;
     ScheduleDetailsAdapter adapter;
     ArrayList<ScheduleItem> scheduleItems;
+    RelativeLayout connectionLostLayout;
+    TextView connectionLostTextView;
 
     private final String TAG = getClass().getSimpleName();
 
@@ -50,7 +55,7 @@ public class ScheduleDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         uInit(view);
 
-        Schedule schedule = (Schedule) getArguments().getSerializable(Strings.SCHEDULE_OBJ);
+        final Schedule schedule = (Schedule) getArguments().getSerializable(Strings.SCHEDULE_OBJ);
 
         scheduleItems = new ArrayList<>();
         //restaurantsList.addItemDecoration(new MarginDecoration(this));
@@ -65,33 +70,47 @@ public class ScheduleDetailsFragment extends Fragment {
 
         adapter = new ScheduleDetailsAdapter(context, header, scheduleItems);
         scheduleDetailsList.setAdapter(adapter);
+        connectionLostLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadScheduleDetails(schedule.getSlug());
+            }
+        });
 
-        if (Utils.hasConnection(context))
-            loadScheduleDetails(schedule.getSlug());
+        loadScheduleDetails(schedule.getSlug());
 
         return view;
     }
 
     private void loadScheduleDetails(String slug) {
 
-        String url = "posts?type[]=schedules&filter[taxonomy]=schedulecat&filter[term]=" + slug;
-        JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                Log.d(TAG, "Response-ScheduleDetails: " + response.toString());
-                parseScheduleDetailsResponse(response);
-                adapter.notifyDataSetChanged();
-                scheduleListProgress.setVisibility(View.GONE);
-                scheduleDetailsList.setVisibility(View.VISIBLE);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        });
+        if (!Utils.hasConnection(context)) {
+            scheduleListProgress.setVisibility(View.GONE);
+            scheduleDetailsList.setVisibility(View.GONE);
+            connectionLostLayout.setVisibility(View.VISIBLE);
+        } else {
+            connectionLostLayout.setVisibility(View.GONE);
+            scheduleListProgress.setVisibility(View.VISIBLE);
+            String url = "posts?type[]=schedules&filter[taxonomy]=schedulecat&filter[term]=" + slug;
+            JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    Log.d(TAG, "Response-ScheduleDetails: " + response.toString());
+                    parseScheduleDetailsResponse(response);
+                    adapter.notifyDataSetChanged();
+                    scheduleListProgress.setVisibility(View.GONE);
+                    scheduleDetailsList.setVisibility(View.VISIBLE);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                }
+            });
 
-        AppController.getInstance().addToRequestQueue(req);
+            AppController.getInstance().addToRequestQueue(req);
+        }
+
 
     }
 
@@ -130,6 +149,8 @@ public class ScheduleDetailsFragment extends Fragment {
 
         scheduleDetailsList = (RecyclerView) view.findViewById(R.id.scheduleList);
         scheduleListProgress = (ProgressBar) view.findViewById(R.id.scheduleListProgress);
-
+        connectionLostLayout = (RelativeLayout) view.findViewById(R.id.connectionLostLayout);
+        connectionLostTextView = (TextView) view.findViewById(R.id.connectionLostTextView);
+        connectionLostTextView.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
     }
 }

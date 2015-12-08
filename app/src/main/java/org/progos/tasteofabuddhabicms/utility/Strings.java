@@ -7,6 +7,7 @@ public class Strings {
 
     public static String RESTAURANT_ID = "RestaurantId";
     public static String SCHEDULE_ID = "ScheduleId";
+    public static String RESTAURANT_OBJ = "RestaurantObj";
     public static String CHEF_OBJ = "ChefObj";
     public static String SCHEDULE_OBJ = "ScheduleObj";
 

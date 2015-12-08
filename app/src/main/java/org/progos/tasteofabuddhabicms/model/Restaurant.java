@@ -1,9 +1,11 @@
 package org.progos.tasteofabuddhabicms.model;
 
+import java.io.Serializable;
+
 /**
  * Created by NomBhatti on 11/30/2015.
  */
-public class Restaurant {
+public class Restaurant implements Serializable {
 
     String id;
     String imgUrl;

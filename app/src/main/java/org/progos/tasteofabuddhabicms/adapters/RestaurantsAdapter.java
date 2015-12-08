@@ -64,8 +64,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantViewHolde
             return;
         }
 
-        Restaurant restaurant = restaurants.get(position - 1); // Subtract 1 for header
-        final String restaurantId = restaurant.getId();
+        final Restaurant restaurant = restaurants.get(position - 1); // Subtract 1 for header
         final String imgUrl = restaurant.getImgUrl();
         Picasso.with(context).load(imgUrl).into(holder.restaurantImg);
 
@@ -76,7 +75,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantViewHolde
 
                 if (context instanceof FragmentActivity) {
                     Bundle args = new Bundle();
-                    args.putString(Strings.RESTAURANT_ID, restaurantId);
+                    args.putSerializable(Strings.RESTAURANT_OBJ, restaurant);
                     RestaurantDetailsFragment restaurantDetailsFragment = new RestaurantDetailsFragment();
                     restaurantDetailsFragment.setArguments(args);
                     FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();

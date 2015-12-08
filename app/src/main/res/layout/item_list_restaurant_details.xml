@@ -19,8 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/prizeTextView"
+        android:layout_marginRight="30dp"
+        android:layout_toLeftOf="@+id/priceTextView"
         android:layout_toRightOf="@+id/leafImg"
         android:text="Grilled Hamour"
         android:textSize="12sp" />
@@ -33,13 +33,13 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@+id/prizeTextView"
+        android:layout_toLeftOf="@+id/priceTextView"
         android:layout_toRightOf="@+id/leafImg"
         android:text="Mini potato Lemon Butter Sauce, Saute vegetables"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/prizeTextView"
+        android:id="@+id/priceTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/dishDetailTextView"

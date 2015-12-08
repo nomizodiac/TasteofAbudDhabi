@@ -2,7 +2,10 @@ package org.progos.tasteofabuddhabicms.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +49,8 @@ public class RestaurantsFragment extends Fragment {
     ArrayList<Restaurant> restaurants;
     RestaurantsAdapter adapter;
     ProgressBar restaurantsListProgress;
+    RelativeLayout connectionLostLayout;
+    TextView connectionLostTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,35 +80,46 @@ public class RestaurantsFragment extends Fragment {
             }
         });
 
-        if (Utils.hasConnection(context))
-            loadRestaurants();
+        connectionLostLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadRestaurants();
+            }
+        });
 
+        loadRestaurants();
         return view;
     }
 
     private void loadRestaurants() {
 
-        String url = "posts?type[]=restaurants";
+        if (!Utils.hasConnection(context)) {
+            restaurantsListProgress.setVisibility(View.GONE);
+            restaurantsList.setVisibility(View.GONE);
+            connectionLostLayout.setVisibility(View.VISIBLE);
+        } else {
+            connectionLostLayout.setVisibility(View.GONE);
+            restaurantsListProgress.setVisibility(View.VISIBLE);
 
-        JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                Log.d(TAG, "Response-Restaurants: " + response.toString());
-                parseRestaurantsResponse(response);
-                adapter.notifyDataSetChanged();
-                restaurantsListProgress.setVisibility(View.GONE);
-                restaurantsList.setVisibility(View.VISIBLE);
+            String url = "posts?type[]=restaurants";
+            JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    Log.d(TAG, "Response-Restaurants: " + response.toString());
+                    parseRestaurantsResponse(response);
+                    adapter.notifyDataSetChanged();
+                    restaurantsListProgress.setVisibility(View.GONE);
+                    restaurantsList.setVisibility(View.VISIBLE);
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        });
-
-        AppController.getInstance().addToRequestQueue(req);
-
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                }
+            });
+            AppController.getInstance().addToRequestQueue(req);
+        }
     }
 
     private void parseRestaurantsResponse(JSONArray response) {
@@ -127,6 +144,8 @@ public class RestaurantsFragment extends Fragment {
 
         restaurantsList = (RecyclerView) view.findViewById(R.id.restaurantsList);
         restaurantsListProgress = (ProgressBar) view.findViewById(R.id.restaurantsListProgress);
-
+        connectionLostLayout = (RelativeLayout) view.findViewById(R.id.connectionLostLayout);
+        connectionLostTextView = (TextView) view.findViewById(R.id.connectionLostTextView);
+        connectionLostTextView.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
     }
 }
