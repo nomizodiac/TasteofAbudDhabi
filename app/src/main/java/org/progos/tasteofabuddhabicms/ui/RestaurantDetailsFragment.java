@@ -31,6 +31,7 @@ import org.progos.tasteofabuddhabicms.adapters.RestaurantDetailsAdapter;
 import org.progos.tasteofabuddhabicms.adapters.RestaurantDetailsSectionedAdapter;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
 import org.progos.tasteofabuddhabicms.model.RestaurantItem;
+import org.progos.tasteofabuddhabicms.sqlite.DataBaseHelper;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Strings;
@@ -76,7 +77,6 @@ public class RestaurantDetailsFragment extends Fragment {
             }
         });
         loadRestaurantDetails(restaurant.getId());
-
         return view;
     }
 
@@ -86,6 +86,47 @@ public class RestaurantDetailsFragment extends Fragment {
             restaurantsListProgress.setVisibility(View.GONE);
             restaurantDetailsList.setVisibility(View.GONE);
             connectionLostLayout.setVisibility(View.VISIBLE);
+
+            ArrayList<RestaurantItem> restaurantItemArrayList = DataBaseHelper.getInstance(context).getRestaurantItems(restaurant);
+            if (restaurantItemArrayList != null && !restaurantItemArrayList.isEmpty()) {
+
+                View header = LayoutInflater.from(context).inflate(R.layout.header_list_restaurant_details, restaurantDetailsList, false);
+                ImageView restaurantImg = (ImageView) header.findViewById(R.id.restaurantImg);
+                Picasso.with(context).load(restaurant.getImgUrl()).into(restaurantImg);
+
+                if (restaurant.getHasCat().equalsIgnoreCase("false")) {
+                    adapter = new RestaurantDetailsAdapter(context, header, restaurantItemArrayList);
+                    restaurantDetailsList.setAdapter(adapter);
+                } else {
+                    adapter = new RestaurantDetailsAdapter(context, header, restaurantItemArrayList);
+
+                    //This is the code to provide a sectioned list
+                    List<RestaurantDetailsSectionedAdapter.Section> sections = new ArrayList<>();
+                    //Sections
+                    for (int i = 0; i < restaurantItemArrayList.size(); i++) {
+                        String itemCat = restaurantItemArrayList.get(i).getCategory();
+                        if (!itemCat.isEmpty()) {
+                            if (i == 0)
+                                i = 1;
+                            sections.add(new RestaurantDetailsSectionedAdapter.Section(i, itemCat));
+                        }
+                    }
+
+                    //Add your adapter to the sectionAdapter
+                    RestaurantDetailsSectionedAdapter.Section[] dummy = new RestaurantDetailsSectionedAdapter.Section[sections.size()];
+                    RestaurantDetailsSectionedAdapter mSectionedAdapter = new
+                            RestaurantDetailsSectionedAdapter(context, R.layout.item_list_restaurant_details_section, R.id.section_text, adapter);
+                    mSectionedAdapter.setSections(sections.toArray(dummy));
+
+                    restaurantDetailsList.setAdapter(mSectionedAdapter);
+                }
+
+                restaurantDetailsList.setVisibility(View.VISIBLE);
+                connectionLostLayout.setVisibility(View.GONE);
+
+            }
+
+
         } else {
             connectionLostLayout.setVisibility(View.GONE);
             restaurantsListProgress.setVisibility(View.VISIBLE);
@@ -109,8 +150,6 @@ public class RestaurantDetailsFragment extends Fragment {
 
             AppController.getInstance().addToRequestQueue(req);
         }
-
-
     }
 
     private void parseRestaurantDetailsResponse(JSONObject response) {
@@ -127,29 +166,33 @@ public class RestaurantDetailsFragment extends Fragment {
             ImageView restaurantImg = (ImageView) header.findViewById(R.id.restaurantImg);
             Picasso.with(context).load(restaurant.getImgUrl()).into(restaurantImg);
 
+            ArrayList<RestaurantItem> restaurantItems = new ArrayList<>();
+
             if (hasCat.equalsIgnoreCase("false")) {
                 // means there are no categories
-                ArrayList<RestaurantItem> restaurantItems = new ArrayList<>();
                 for (int i = 0; i < itemTitlesJsonArray.length(); i++) {
                     String title = itemTitlesJsonArray.getString(i);
                     String category = itemCatsJsonArray.getString(i);
                     String description = itemDescriptionsJsonArray.getString(i);
                     String price = itemPricesJsonArray.getString(i);
 
-                    RestaurantItem restaurantItem = new RestaurantItem(title, category, description, price);
+                    RestaurantItem restaurantItem = new RestaurantItem(title, category, description, price, restaurant.getId());
                     restaurantItems.add(restaurantItem);
                 }
                 adapter = new RestaurantDetailsAdapter(context, header, restaurantItems);
                 restaurantDetailsList.setAdapter(adapter);
+
+                DataBaseHelper.getInstance(context).addRestaurantItems(restaurantItems);
+                restaurant.setHasCat("false");
+                DataBaseHelper.getInstance(context).updateRestaurant(restaurant);
             } else {
-                ArrayList<RestaurantItem> restaurantItems = new ArrayList<>();
                 for (int i = 0; i < itemTitlesJsonArray.length(); i++) {
                     String title = itemTitlesJsonArray.getString(i);
                     String category = itemCatsJsonArray.getString(i);
                     String description = itemDescriptionsJsonArray.getString(i);
                     String price = itemPricesJsonArray.getString(i);
 
-                    RestaurantItem restaurantItem = new RestaurantItem(title, category, description, price);
+                    RestaurantItem restaurantItem = new RestaurantItem(title, category, description, price, restaurant.getId());
                     restaurantItems.add(restaurantItem);
                 }
                 adapter = new RestaurantDetailsAdapter(context, header, restaurantItems);
@@ -173,6 +216,10 @@ public class RestaurantDetailsFragment extends Fragment {
                 mSectionedAdapter.setSections(sections.toArray(dummy));
 
                 restaurantDetailsList.setAdapter(mSectionedAdapter);
+
+                DataBaseHelper.getInstance(context).addRestaurantItems(restaurantItems);
+                restaurant.setHasCat("true");
+                DataBaseHelper.getInstance(context).updateRestaurant(restaurant);
             }
 
         } catch (JSONException e) {

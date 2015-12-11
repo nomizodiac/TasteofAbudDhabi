@@ -9,10 +9,12 @@ public class Restaurant implements Serializable {
 
     String id;
     String imgUrl;
+    String hasCat;
 
-    public Restaurant(String id, String imgUrl) {
+    public Restaurant(String id, String imgUrl, String hasCat) {
         this.id = id;
         this.imgUrl = imgUrl;
+        this.hasCat = hasCat;
     }
 
     public String getId() {
@@ -29,5 +31,13 @@ public class Restaurant implements Serializable {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public String getHasCat() {
+        return hasCat;
+    }
+
+    public void setHasCat(String hasCat) {
+        this.hasCat = hasCat;
     }
 }

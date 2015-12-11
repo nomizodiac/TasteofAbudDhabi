@@ -1,5 +1,6 @@
 package org.progos.tasteofabuddhabicms.ui;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import org.progos.tasteofabuddhabicms.adapters.ScheduleAdapter;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
 import org.progos.tasteofabuddhabicms.model.Schedule;
 import org.progos.tasteofabuddhabicms.model.ScheduleItem;
+import org.progos.tasteofabuddhabicms.sqlite.DataBaseHelper;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Utils;
@@ -86,9 +88,18 @@ public class ScheduleFragment extends Fragment {
     private void loadSchedules() {
 
         if (!Utils.hasConnection(context)) {
-            scheduleListProgress.setVisibility(View.GONE);
-            scheduleList.setVisibility(View.GONE);
-            connectionLostLayout.setVisibility(View.VISIBLE);
+
+            ArrayList<Schedule> schedulesArrayList = DataBaseHelper.getInstance(context).getSchedules();
+            if (schedulesArrayList != null && !schedulesArrayList.isEmpty()) {
+                schedules.addAll(schedulesArrayList);
+                adapter.notifyDataSetChanged();
+                scheduleListProgress.setVisibility(View.GONE);
+                scheduleList.setVisibility(View.VISIBLE);
+            } else {
+                scheduleListProgress.setVisibility(View.GONE);
+                scheduleList.setVisibility(View.GONE);
+                connectionLostLayout.setVisibility(View.VISIBLE);
+            }
         } else {
             connectionLostLayout.setVisibility(View.GONE);
             scheduleListProgress.setVisibility(View.VISIBLE);
@@ -96,12 +107,25 @@ public class ScheduleFragment extends Fragment {
             String url = "taxonomies/schedulecat/terms";
             JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
                 @Override
-                public void onResponse(JSONArray response) {
+                public void onResponse(final JSONArray response) {
                     Log.d(TAG, "Response-Restaurants: " + response.toString());
-                    parseSchedulesResponse(response);
-                    adapter.notifyDataSetChanged();
-                    scheduleListProgress.setVisibility(View.GONE);
-                    scheduleList.setVisibility(View.VISIBLE);
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            parseSchedulesResponse(response);
+                            Activity activity = (Activity) context;
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                    scheduleListProgress.setVisibility(View.GONE);
+                                    scheduleList.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+                    });
+                    thread.start();
+
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -132,6 +156,9 @@ public class ScheduleFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+        if (schedules != null && !schedules.isEmpty()) {
+            DataBaseHelper.getInstance(context).addSchedules(schedules);
         }
     }
 

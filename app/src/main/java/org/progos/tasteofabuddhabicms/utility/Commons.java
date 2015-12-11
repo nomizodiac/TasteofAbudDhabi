@@ -18,4 +18,7 @@ public class Commons {
     public static String FONT_RALEWAY_REGULAR = "RalewayRegular.ttf";
     public static String FONT_RALEWAY_THIN = "RalewayThin.ttf";
 
+    public static String DB_PATH = "/data/data/org.progos.tasteofabuddhabicms/databases/";
+    public static String DB_NAME = "tasteofabudhabi.db";
+
 }

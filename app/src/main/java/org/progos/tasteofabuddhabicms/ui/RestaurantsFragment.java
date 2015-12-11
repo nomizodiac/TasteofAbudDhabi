@@ -1,11 +1,8 @@
 package org.progos.tasteofabuddhabicms.ui;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -30,11 +26,13 @@ import org.progos.tasteofabuddhabicms.AppController;
 import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.adapters.RestaurantsAdapter;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
+import org.progos.tasteofabuddhabicms.sqlite.DataBaseHelper;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Utils;
 import org.progos.tasteofabuddhabicms.webservices.Urls;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -94,9 +92,21 @@ public class RestaurantsFragment extends Fragment {
     private void loadRestaurants() {
 
         if (!Utils.hasConnection(context)) {
-            restaurantsListProgress.setVisibility(View.GONE);
-            restaurantsList.setVisibility(View.GONE);
-            connectionLostLayout.setVisibility(View.VISIBLE);
+
+            // if user has no internet, load data from local database
+            // if user has empty database then prompt error message
+            ArrayList<Restaurant> restaurantArrayList = DataBaseHelper.getInstance(context).getRestaurants();
+            if (restaurantArrayList != null && !restaurantArrayList.isEmpty()) {
+                restaurants.addAll(restaurantArrayList);
+                adapter.notifyDataSetChanged();
+                restaurantsListProgress.setVisibility(View.GONE);
+                restaurantsList.setVisibility(View.VISIBLE);
+            } else {
+                restaurantsListProgress.setVisibility(View.GONE);
+                restaurantsList.setVisibility(View.GONE);
+                connectionLostLayout.setVisibility(View.VISIBLE);
+            }
+
         } else {
             connectionLostLayout.setVisibility(View.GONE);
             restaurantsListProgress.setVisibility(View.VISIBLE);
@@ -104,13 +114,24 @@ public class RestaurantsFragment extends Fragment {
             String url = "posts?type[]=restaurants";
             JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
                 @Override
-                public void onResponse(JSONArray response) {
+                public void onResponse(final JSONArray response) {
                     Log.d(TAG, "Response-Restaurants: " + response.toString());
-                    parseRestaurantsResponse(response);
-                    adapter.notifyDataSetChanged();
-                    restaurantsListProgress.setVisibility(View.GONE);
-                    restaurantsList.setVisibility(View.VISIBLE);
-
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            parseRestaurantsResponse(response);
+                            Activity activity = (Activity) context;
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                    restaurantsListProgress.setVisibility(View.GONE);
+                                    restaurantsList.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+                    });
+                    thread.start();
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -130,13 +151,17 @@ public class RestaurantsFragment extends Fragment {
                 String restaurantID = jsonObject.getString("ID");
                 JSONObject imageJsonObj = jsonObject.getJSONObject("featured_image");
                 String imageUrl = imageJsonObj.getString("guid");
-
-                Restaurant restaurant = new Restaurant(restaurantID, imageUrl);
+                Restaurant restaurant = new Restaurant(restaurantID, imageUrl, "false");
                 restaurants.add(restaurant);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        // Add restaurants list to local database
+        if (restaurants != null && !restaurants.isEmpty()) {
+            DataBaseHelper.getInstance(context).addRestaurants(restaurants);
         }
     }
 

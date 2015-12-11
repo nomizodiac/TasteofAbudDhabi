@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.progos.tasteofabuddhabicms.R;
@@ -67,7 +68,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantViewHolde
         final Restaurant restaurant = restaurants.get(position - 1); // Subtract 1 for header
         final String imgUrl = restaurant.getImgUrl();
         Picasso.with(context).load(imgUrl).into(holder.restaurantImg);
-
+        //Picasso.with(context).load(imgUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.restaurantImg);
 
         holder.restaurantImg.setOnClickListener(new View.OnClickListener() {
             @Override

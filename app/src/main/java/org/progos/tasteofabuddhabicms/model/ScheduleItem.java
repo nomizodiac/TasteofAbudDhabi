@@ -10,10 +10,12 @@ public class ScheduleItem implements Serializable {
 
     String time;
     String act;
+    String scheduleId;
 
-    public ScheduleItem(String time, String act) {
+    public ScheduleItem(String time, String act, String scheduleId) {
         this.time = time;
         this.act = act;
+        this.scheduleId = scheduleId;
     }
 
     public String getTime() {
@@ -30,5 +32,13 @@ public class ScheduleItem implements Serializable {
 
     public void setAct(String act) {
         this.act = act;
+    }
+
+    public String getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(String scheduleId) {
+        this.scheduleId = scheduleId;
     }
 }

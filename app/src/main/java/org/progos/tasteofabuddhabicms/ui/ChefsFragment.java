@@ -1,5 +1,6 @@
 package org.progos.tasteofabuddhabicms.ui;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.adapters.ChefsAdapter;
 import org.progos.tasteofabuddhabicms.model.Chef;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
+import org.progos.tasteofabuddhabicms.sqlite.DataBaseHelper;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Utils;
@@ -93,21 +95,45 @@ public class ChefsFragment extends Fragment {
     private void loadChefs() {
 
         if (!Utils.hasConnection(context)) {
-            chefsListProgress.setVisibility(View.GONE);
-            chefsList.setVisibility(View.GONE);
-            connectionLostLayout.setVisibility(View.VISIBLE);
+            // if user has no internet, load data from local database
+            // if user has empty database then prompt error message
+            ArrayList<Chef> chefsArrayList = DataBaseHelper.getInstance(context).getChefs();
+            if (chefsArrayList != null && !chefsArrayList.isEmpty()) {
+                chefs.addAll(chefsArrayList);
+                adapter.notifyDataSetChanged();
+                chefsListProgress.setVisibility(View.GONE);
+                chefsList.setVisibility(View.VISIBLE);
+            } else {
+                chefsListProgress.setVisibility(View.GONE);
+                chefsList.setVisibility(View.GONE);
+                connectionLostLayout.setVisibility(View.VISIBLE);
+            }
+
         } else {
             connectionLostLayout.setVisibility(View.GONE);
             chefsListProgress.setVisibility(View.VISIBLE);
             String url = "posts?type[]=chefs";
             JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
                 @Override
-                public void onResponse(JSONArray response) {
+                public void onResponse(final JSONArray response) {
                     Log.d(TAG, "Response-Chefs: " + response.toString());
-                    parseChefsResponse(response);
-                    adapter.notifyDataSetChanged();
-                    chefsListProgress.setVisibility(View.GONE);
-                    chefsList.setVisibility(View.VISIBLE);
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            parseChefsResponse(response);
+                            Activity activity = (Activity) context;
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                    chefsListProgress.setVisibility(View.GONE);
+                                    chefsList.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+                    });
+                    thread.start();
+
 
                 }
             }, new Response.ErrorListener() {
@@ -138,7 +164,7 @@ public class ChefsFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-
+        DataBaseHelper.getInstance(context).addChefs(chefs);
     }
 
 

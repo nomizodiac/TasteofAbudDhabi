@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by NomBhatti on 11/30/2015.
@@ -22,6 +24,13 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+
+        Picasso.Builder builder = new Picasso.Builder(this);
+        builder.downloader(new OkHttpDownloader(this, Integer.MAX_VALUE));
+        Picasso built = builder.build();
+        //built.setIndicatorsEnabled(true);
+        //built.setLoggingEnabled(true);
+        Picasso.setSingletonInstance(built);
     }
 
     public static synchronized AppController getInstance() {

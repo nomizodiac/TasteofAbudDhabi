@@ -1,5 +1,6 @@
 package org.progos.tasteofabuddhabicms.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,8 +25,10 @@ import org.json.JSONObject;
 import org.progos.tasteofabuddhabicms.AppController;
 import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.adapters.ScheduleDetailsAdapter;
+import org.progos.tasteofabuddhabicms.model.Restaurant;
 import org.progos.tasteofabuddhabicms.model.Schedule;
 import org.progos.tasteofabuddhabicms.model.ScheduleItem;
+import org.progos.tasteofabuddhabicms.sqlite.DataBaseHelper;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.FontFactory;
 import org.progos.tasteofabuddhabicms.utility.Strings;
@@ -46,6 +49,7 @@ public class ScheduleDetailsFragment extends Fragment {
     ArrayList<ScheduleItem> scheduleItems;
     RelativeLayout connectionLostLayout;
     TextView connectionLostTextView;
+    Schedule schedule;
 
     private final String TAG = getClass().getSimpleName();
 
@@ -55,8 +59,7 @@ public class ScheduleDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         uInit(view);
 
-        final Schedule schedule = (Schedule) getArguments().getSerializable(Strings.SCHEDULE_OBJ);
-
+        schedule = (Schedule) getArguments().getSerializable(Strings.SCHEDULE_OBJ);
         scheduleItems = new ArrayList<>();
         //restaurantsList.addItemDecoration(new MarginDecoration(this));
         scheduleDetailsList.setHasFixedSize(true);
@@ -85,21 +88,43 @@ public class ScheduleDetailsFragment extends Fragment {
     private void loadScheduleDetails(String slug) {
 
         if (!Utils.hasConnection(context)) {
-            scheduleListProgress.setVisibility(View.GONE);
-            scheduleDetailsList.setVisibility(View.GONE);
-            connectionLostLayout.setVisibility(View.VISIBLE);
+
+            ArrayList<ScheduleItem> scheduleItemArrayList = DataBaseHelper.getInstance(context).getScheduleItems(schedule);
+            if (scheduleItemArrayList != null && !scheduleItemArrayList.isEmpty()) {
+                scheduleItems.addAll(scheduleItemArrayList);
+                adapter.notifyDataSetChanged();
+                scheduleListProgress.setVisibility(View.GONE);
+                scheduleDetailsList.setVisibility(View.VISIBLE);
+            } else {
+                scheduleListProgress.setVisibility(View.GONE);
+                scheduleDetailsList.setVisibility(View.GONE);
+                connectionLostLayout.setVisibility(View.VISIBLE);
+            }
+
         } else {
             connectionLostLayout.setVisibility(View.GONE);
             scheduleListProgress.setVisibility(View.VISIBLE);
             String url = "posts?type[]=schedules&filter[taxonomy]=schedulecat&filter[term]=" + slug;
             JsonArrayRequest req = new JsonArrayRequest(Urls.base_url + url, new Response.Listener<JSONArray>() {
                 @Override
-                public void onResponse(JSONArray response) {
+                public void onResponse(final JSONArray response) {
                     Log.d(TAG, "Response-ScheduleDetails: " + response.toString());
-                    parseScheduleDetailsResponse(response);
-                    adapter.notifyDataSetChanged();
-                    scheduleListProgress.setVisibility(View.GONE);
-                    scheduleDetailsList.setVisibility(View.VISIBLE);
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            parseScheduleDetailsResponse(response);
+                            Activity activity = (Activity) context;
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                    scheduleListProgress.setVisibility(View.GONE);
+                                    scheduleDetailsList.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+                    });
+                    thread.start();
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -110,8 +135,6 @@ public class ScheduleDetailsFragment extends Fragment {
 
             AppController.getInstance().addToRequestQueue(req);
         }
-
-
     }
 
     private void parseScheduleDetailsResponse(JSONArray response) {
@@ -134,13 +157,17 @@ public class ScheduleDetailsFragment extends Fragment {
                 }
 
                 for (int l = 0; l < postMetaDataColumn1.length(); l++) {
-                    ScheduleItem scheduleItem = new ScheduleItem(postMetaDataColumn1Array[l], postMetaDataColumn2Array[l]);
+                    ScheduleItem scheduleItem = new ScheduleItem(postMetaDataColumn1Array[l], postMetaDataColumn2Array[l], schedule.getId());
                     scheduleItems.add(scheduleItem);
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (scheduleItems != null && !scheduleItems.isEmpty()) {
+            DataBaseHelper.getInstance(context).addScheduleItems(scheduleItems);
         }
 
     }

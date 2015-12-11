@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.progos.tasteofabuddhabicms.ui.ChefDetailsFragment;
@@ -66,6 +67,7 @@ public class ChefsAdapter extends RecyclerView.Adapter<ChefViewHolder> {
         final Chef chef = chefs.get(position - 1);  // Subtract 1 for header
         holder.chefName.setText(chef.getName());
         Picasso.with(context).load(chef.getImageUrl()).into(holder.chefImg);
+        //Picasso.with(context).load(chef.getImageUrl()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.chefImg);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
