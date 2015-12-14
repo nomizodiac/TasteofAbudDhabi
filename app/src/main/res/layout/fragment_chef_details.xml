@@ -71,7 +71,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_toRightOf="@+id/chefImg"
-                    android:background="@color/colorOrangeTheme"
+                    android:background="@drawable/selector_orange_bar"
                     android:gravity="start|center_vertical"
                     android:padding="10dp"
                     android:text="Eric Lanlard"

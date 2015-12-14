@@ -64,10 +64,9 @@ public class ChefsAdapter extends RecyclerView.Adapter<ChefViewHolder> {
         if (isHeader(position)) {
             return;
         }
-        final Chef chef = chefs.get(position - 1);  // Subtract 1 for header
+        final Chef chef = chefs.get(position - 1);
         holder.chefName.setText(chef.getName());
         Picasso.with(context).load(chef.getImageUrl()).into(holder.chefImg);
-        //Picasso.with(context).load(chef.getImageUrl()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.chefImg);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,12 +78,12 @@ public class ChefsAdapter extends RecyclerView.Adapter<ChefViewHolder> {
                     Fragment fragment = fm.findFragmentByTag(Strings.FRAGMENT_CHEFS);
                     if (fragment instanceof ChefsFragment) {
                         ft.hide(fragment);
-
                         Bundle args = new Bundle();
                         args.putSerializable(Strings.CHEF_OBJ, chef);
                         ChefDetailsFragment chefDetailsFragment = new ChefDetailsFragment();
                         chefDetailsFragment.setArguments(args);
                         ft.add(R.id.fragmentsContainerLayout, chefDetailsFragment);
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();
                     }

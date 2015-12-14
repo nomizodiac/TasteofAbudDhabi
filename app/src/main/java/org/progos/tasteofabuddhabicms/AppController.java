@@ -9,6 +9,8 @@ import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
+import org.progos.tasteofabuddhabicms.utility.Utils;
+
 /**
  * Created by NomBhatti on 11/30/2015.
  */
@@ -31,6 +33,8 @@ public class AppController extends Application {
         //built.setIndicatorsEnabled(true);
         //built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
+
+        Utils.printDeviceScreenCredentials(mInstance);
     }
 
     public static synchronized AppController getInstance() {

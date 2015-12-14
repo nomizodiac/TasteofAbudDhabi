@@ -66,7 +66,7 @@ public class RestaurantsFragment extends Fragment {
         TextView restaurantsHeadingLbl = (TextView) header.findViewById(R.id.restaurantsHeadingLbl);
         TextView restaurantsDescription = (TextView) header.findViewById(R.id.restaurantsDescription);
         restaurantsHeadingLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
-        restaurantsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
+        restaurantsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
 
         adapter = new RestaurantsAdapter(context, header, restaurants);
         restaurantsList.setAdapter(adapter);

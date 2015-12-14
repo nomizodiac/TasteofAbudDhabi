@@ -83,6 +83,7 @@ public class RestaurantDetailsFragment extends Fragment {
     private void loadRestaurantDetails(String restaurantId) {
 
         if (!Utils.hasConnection(context)) {
+
             restaurantsListProgress.setVisibility(View.GONE);
             restaurantDetailsList.setVisibility(View.GONE);
             connectionLostLayout.setVisibility(View.VISIBLE);
@@ -123,7 +124,6 @@ public class RestaurantDetailsFragment extends Fragment {
 
                 restaurantDetailsList.setVisibility(View.VISIBLE);
                 connectionLostLayout.setVisibility(View.GONE);
-
             }
 
 

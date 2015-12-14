@@ -124,8 +124,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/activity_margin_right"
-            android:background="@drawable/menu" />
+            android:background="#0000"
+            android:src="@drawable/menu" />
 
         <RelativeLayout
             android:layout_width="match_parent"

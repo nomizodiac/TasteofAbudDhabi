@@ -68,7 +68,6 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantViewHolde
         final Restaurant restaurant = restaurants.get(position - 1); // Subtract 1 for header
         final String imgUrl = restaurant.getImgUrl();
         Picasso.with(context).load(imgUrl).into(holder.restaurantImg);
-        //Picasso.with(context).load(imgUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.restaurantImg);
 
         holder.restaurantImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +84,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantViewHolde
                     if (fragment instanceof RestaurantsFragment) {
                         ft.hide(fragment);
                         ft.add(R.id.fragmentsContainerLayout, restaurantDetailsFragment, Strings.FRAGMENT_RESTAURANT_DETAILS);
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();
                     }

@@ -85,7 +85,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        Fragment fragment = null;
 
         for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
             fm.popBackStack();
@@ -97,15 +96,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         if (fragmentTag == Strings.FRAGMENT_RESTAURANTS) {
             ft.add(R.id.fragmentsContainerLayout, new RestaurantsFragment(), Strings.FRAGMENT_RESTAURANTS);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(null);
         } else if (fragmentTag == Strings.FRAGMENT_SCHEDULE) {
             ft.add(R.id.fragmentsContainerLayout, new ScheduleFragment(), Strings.FRAGMENT_SCHEDULE);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(null);
         } else if (fragmentTag == Strings.FRAGMENT_CHEFS) {
             ft.add(R.id.fragmentsContainerLayout, new ChefsFragment(), Strings.FRAGMENT_CHEFS);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(null);
         } else if (fragmentTag == Strings.FRAGMENT_VENUE_MAP) {
             ft.add(R.id.fragmentsContainerLayout, new VenueMapFragment(), Strings.FRAGMENT_VENUE_MAP);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(null);
         }
 

@@ -80,6 +80,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
                         ScheduleDetailsFragment scheduleDetailsFragment = new ScheduleDetailsFragment();
                         scheduleDetailsFragment.setArguments(args);
                         ft.add(R.id.fragmentsContainerLayout, scheduleDetailsFragment);
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();
                     }

@@ -32,9 +32,11 @@ import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -575,6 +577,61 @@ public class Utils {
         }
         String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
         return applicationName;
+    }
+
+    public static void printDeviceScreenCredentials(Context context) {
+        String screenSize = "", screenDensity = "";
+        int size = context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+        switch (size) {
+            case Configuration.SCREENLAYOUT_SIZE_LARGE:
+                screenSize = "Large screen";
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_NORMAL:
+                screenSize = "Normal screen";
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_SMALL:
+                screenSize = "Small screen";
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_XLARGE:
+                screenSize = "Extra Large screen";
+                break;
+            default:
+                screenSize = "Screen size is neither large, normal or small";
+        }
+
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+
+
+        int density = context.getResources().getDisplayMetrics().densityDpi;
+        switch (density) {
+            case DisplayMetrics.DENSITY_LOW:
+                screenDensity = "ldpi";
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                screenDensity = "mdpi";
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+                screenDensity = "hdpi";
+                break;
+            case DisplayMetrics.DENSITY_XHIGH:
+                screenDensity = "xhdpi";
+                break;
+            case DisplayMetrics.DENSITY_XXHIGH:
+                screenDensity = "xxhdpi";
+                break;
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                screenDensity = "xxxhdpi";
+                break;
+        }
+
+        Log.i("Device Screen Credentials", "ScreenSize: " + screenSize);
+        Log.i("Device Screen Credentials", "ScreenResolution: " + width + "×" + height);
+        Log.i("Device Screen Credentials", "ScreenDensity: " + screenDensity);
     }
 
 
