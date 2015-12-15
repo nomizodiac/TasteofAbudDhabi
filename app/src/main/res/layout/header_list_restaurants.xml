@@ -44,6 +44,6 @@
         android:textColor="@color/colorOrangeTheme"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/restaurantsHeadingLbl"
-        android:textSize="14sp" />
+        android:textSize="13sp" />
 
 </RelativeLayout>

@@ -68,7 +68,7 @@ public class ChefsFragment extends Fragment {
         TextView chefsHeadingLbl = (TextView) header.findViewById(R.id.chefsHeadingLbl);
         TextView chefsDescription = (TextView) header.findViewById(R.id.chefsDescription);
         chefsHeadingLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
-        chefsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
+        chefsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_MEDIUM));
 
         adapter = new ChefsAdapter(context, header, chefs);
         chefsList.setAdapter(adapter);

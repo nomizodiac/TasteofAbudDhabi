@@ -68,6 +68,10 @@ public class ScheduleDetailsFragment extends Fragment {
         View header = LayoutInflater.from(context).inflate(R.layout.header_list_schedule_details, scheduleDetailsList, false);
         TextView dayTextView = (TextView) header.findViewById(R.id.dayTextView);
         TextView dateTextView = (TextView) header.findViewById(R.id.dateTextView);
+        dayTextView.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
+        dateTextView.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
+
+
         dayTextView.setText(schedule.getDay());
         dateTextView.setText(schedule.getDate());
 

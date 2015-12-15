@@ -23,9 +23,9 @@ public class ScheduleDetailsViewHolder extends RecyclerView.ViewHolder {
         timeTextView = (TextView) itemView.findViewById(R.id.timeTextView);
         actTextView = (TextView) itemView.findViewById(R.id.actTextView);
 
-        if (timeTextView != null)
+        /*if (timeTextView != null)
             timeTextView.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
         if (actTextView != null)
-            actTextView.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
+            actTextView.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));*/
     }
 }

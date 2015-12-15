@@ -116,7 +116,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/activity_margin_left"
-            android:background="@drawable/back_button" />
+            android:background="@drawable/back_button"
+            android:visibility="invisible" />
 
         <ImageButton
             android:id="@+id/menuBtn"

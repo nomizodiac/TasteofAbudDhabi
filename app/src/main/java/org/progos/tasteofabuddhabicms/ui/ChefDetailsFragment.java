@@ -40,6 +40,7 @@ public class ChefDetailsFragment extends Fragment {
         Chef chef = (Chef) getArguments().getSerializable(Strings.CHEF_OBJ);
         chefName.setText(chef.getName());
         chefDescription.setText(Html.fromHtml(Html.fromHtml(chef.getDescription()).toString()));
+        chefDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_MEDIUM));
         Picasso.with(context).load(chef.getImageUrl()).into(chefImg);
 
         return view;
@@ -54,8 +55,8 @@ public class ChefDetailsFragment extends Fragment {
         chefImg = (ImageView) view.findViewById(R.id.chefImg);
 
         chefsHeadingLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
-        chefsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
+        chefsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_MEDIUM));
         chefName.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
-        chefDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_REGULAR));
+        chefDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_MEDIUM));
     }
 }

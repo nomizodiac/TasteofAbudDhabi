@@ -93,6 +93,9 @@ public class RestaurantDetailsFragment extends Fragment {
 
                 View header = LayoutInflater.from(context).inflate(R.layout.header_list_restaurant_details, restaurantDetailsList, false);
                 ImageView restaurantImg = (ImageView) header.findViewById(R.id.restaurantImg);
+                TextView greyBarTxt = (TextView) header.findViewById(R.id.greyBarTxt);
+                greyBarTxt.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_BOLD));
+
                 Picasso.with(context).load(restaurant.getImgUrl()).into(restaurantImg);
 
                 if (restaurant.getHasCat().equalsIgnoreCase("false")) {
@@ -164,6 +167,8 @@ public class RestaurantDetailsFragment extends Fragment {
 
             View header = LayoutInflater.from(context).inflate(R.layout.header_list_restaurant_details, restaurantDetailsList, false);
             ImageView restaurantImg = (ImageView) header.findViewById(R.id.restaurantImg);
+            TextView greyBarTxt = (TextView) header.findViewById(R.id.greyBarTxt);
+            greyBarTxt.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_BOLD));
             Picasso.with(context).load(restaurant.getImgUrl()).into(restaurantImg);
 
             ArrayList<RestaurantItem> restaurantItems = new ArrayList<>();

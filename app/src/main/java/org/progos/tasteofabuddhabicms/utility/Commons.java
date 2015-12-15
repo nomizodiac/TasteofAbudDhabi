@@ -13,8 +13,10 @@ public class Commons {
     public static int STACK_IDENTIFIER_SCHEDULE_FRAGMENT;
     public static int STACK_IDENTIFIER_VENUE_MAP_FRAGMENT;
 
+    public static String FONT_RALEWAY_EXTRA_BOLD = "RalewayExtraBold.ttf";
     public static String FONT_RALEWAY_BOLD = "RalewayBold.ttf";
     public static String FONT_RALEWAY_SEMI_BOLD = "RalewaySemiBold.ttf";
+    public static String FONT_RALEWAY_MEDIUM = "RalewayMedium.ttf";
     public static String FONT_RALEWAY_REGULAR = "RalewayRegular.ttf";
     public static String FONT_RALEWAY_THIN = "RalewayThin.ttf";
 
