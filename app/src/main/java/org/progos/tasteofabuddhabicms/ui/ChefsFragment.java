@@ -1,20 +1,23 @@
 package org.progos.tasteofabuddhabicms.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -27,8 +30,8 @@ import org.json.JSONObject;
 import org.progos.tasteofabuddhabicms.AppController;
 import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.adapters.ChefsAdapter;
+import org.progos.tasteofabuddhabicms.adapters.ChefsSectionedAdapter;
 import org.progos.tasteofabuddhabicms.model.Chef;
-import org.progos.tasteofabuddhabicms.model.Restaurant;
 import org.progos.tasteofabuddhabicms.sqlite.DataBaseHelper;
 import org.progos.tasteofabuddhabicms.utility.Commons;
 import org.progos.tasteofabuddhabicms.utility.FontFactory;
@@ -36,6 +39,7 @@ import org.progos.tasteofabuddhabicms.utility.Utils;
 import org.progos.tasteofabuddhabicms.webservices.Urls;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by NomBhatti on 11/25/2015.
@@ -51,6 +55,8 @@ public class ChefsFragment extends Fragment {
     ProgressBar chefsListProgress;
     RelativeLayout connectionLostLayout;
     TextView connectionLostTextView;
+    List<ChefsSectionedAdapter.Section> sections;
+    ChefsSectionedAdapter mSectionedAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,27 +65,10 @@ public class ChefsFragment extends Fragment {
         uInit(view);
 
         chefs = new ArrayList<>();
-        //restaurantsList.addItemDecoration(new MarginDecoration(this));
+        sections = new ArrayList<>();
         chefsList.setHasFixedSize(true);
         final GridLayoutManager manager = new GridLayoutManager(context, 2);
         chefsList.setLayoutManager(manager);
-
-        View header = LayoutInflater.from(context).inflate(R.layout.header_list_chefs, chefsList, false);
-        TextView chefsHeadingLbl = (TextView) header.findViewById(R.id.chefsHeadingLbl);
-        TextView chefsDescription = (TextView) header.findViewById(R.id.chefsDescription);
-        chefsHeadingLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
-        chefsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_MEDIUM));
-
-        adapter = new ChefsAdapter(context, header, chefs);
-        chefsList.setAdapter(adapter);
-
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return adapter.isHeader(position) ? manager.getSpanCount() : 1;
-            }
-        });
-
         connectionLostLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +76,9 @@ public class ChefsFragment extends Fragment {
             }
         });
 
+
         loadChefs();
+
 
         return view;
     }
@@ -99,8 +90,32 @@ public class ChefsFragment extends Fragment {
             // if user has empty database then prompt error message
             ArrayList<Chef> chefsArrayList = DataBaseHelper.getInstance(context).getChefs();
             if (chefsArrayList != null && !chefsArrayList.isEmpty()) {
-                chefs.addAll(chefsArrayList);
-                adapter.notifyDataSetChanged();
+                sections.clear();
+                for (int i = 0; i < chefsArrayList.size(); i++) {
+                    Chef chef = chefsArrayList.get(i);
+                    if (chef.getName().contains("&")) {
+                        int tempInt = i + 1;
+                        sections.add(new ChefsSectionedAdapter.Section(tempInt, chef));
+                    } else
+                        chefs.add(chefsArrayList.get(i));
+                }
+
+                View header = LayoutInflater.from(context).inflate(R.layout.header_list_chefs, chefsList, false);
+                TextView chefsHeadingLbl = (TextView) header.findViewById(R.id.chefsHeadingLbl);
+                TextView chefsDescription = (TextView) header.findViewById(R.id.chefsDescription);
+                chefsHeadingLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
+                chefsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_MEDIUM));
+
+                adapter = new ChefsAdapter(context, header, chefs);
+
+                //Add your adapter to the sectionAdapter
+                ChefsSectionedAdapter.Section[] dummy = new ChefsSectionedAdapter.Section[sections.size()];
+                mSectionedAdapter = new
+                        ChefsSectionedAdapter(context, R.layout.item_list_two_chefs, R.id.chefName, R.id.chefImg, chefsList, adapter);
+                mSectionedAdapter.setSections(sections.toArray(dummy));
+                chefsList.setAdapter(mSectionedAdapter);
+
+                //mSectionedAdapter.notifyDataSetChanged();
                 chefsListProgress.setVisibility(View.GONE);
                 chefsList.setVisibility(View.VISIBLE);
             } else {
@@ -108,7 +123,6 @@ public class ChefsFragment extends Fragment {
                 chefsList.setVisibility(View.GONE);
                 connectionLostLayout.setVisibility(View.VISIBLE);
             }
-
         } else {
             connectionLostLayout.setVisibility(View.GONE);
             chefsListProgress.setVisibility(View.VISIBLE);
@@ -125,15 +139,42 @@ public class ChefsFragment extends Fragment {
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    adapter.notifyDataSetChanged();
-                                    chefsListProgress.setVisibility(View.GONE);
-                                    chefsList.setVisibility(View.VISIBLE);
+                                    ArrayList<Chef> chefsArrayList = new ArrayList<>();
+                                    chefsArrayList.addAll(chefs);
+                                    chefs.clear();
+                                    if (chefsArrayList != null && !chefsArrayList.isEmpty()) {
+                                        sections.clear();
+                                        for (int i = 0; i < chefsArrayList.size(); i++) {
+                                            if (chefsArrayList.get(i).getName().contains("&")) {
+                                                int tempInt = i + 1;
+                                                sections.add(new ChefsSectionedAdapter.Section(tempInt, chefsArrayList.get(i)));
+                                            } else
+                                                chefs.add(chefsArrayList.get(i));
+                                        }
+
+                                        View header = LayoutInflater.from(context).inflate(R.layout.header_list_chefs, chefsList, false);
+                                        TextView chefsHeadingLbl = (TextView) header.findViewById(R.id.chefsHeadingLbl);
+                                        TextView chefsDescription = (TextView) header.findViewById(R.id.chefsDescription);
+                                        chefsHeadingLbl.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_SEMI_BOLD));
+                                        chefsDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_MEDIUM));
+                                        adapter = new ChefsAdapter(context, header, chefs);
+
+                                        //Add your adapter to the sectionAdapter
+                                        ChefsSectionedAdapter.Section[] dummy = new ChefsSectionedAdapter.Section[sections.size()];
+                                        mSectionedAdapter = new
+                                                ChefsSectionedAdapter(context, R.layout.item_list_two_chefs, R.id.chefName, R.id.chefImg, chefsList, adapter);
+                                        mSectionedAdapter.setSections(sections.toArray(dummy));
+                                        chefsList.setAdapter(mSectionedAdapter);
+
+                                        //mSectionedAdapter.notifyDataSetChanged();
+                                        chefsListProgress.setVisibility(View.GONE);
+                                        chefsList.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             });
                         }
                     });
                     thread.start();
-
 
                 }
             }, new Response.ErrorListener() {

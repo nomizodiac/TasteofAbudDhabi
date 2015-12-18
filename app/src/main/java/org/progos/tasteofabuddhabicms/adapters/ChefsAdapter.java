@@ -10,15 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-
 import org.progos.tasteofabuddhabicms.ui.ChefDetailsFragment;
 import org.progos.tasteofabuddhabicms.R;
 import org.progos.tasteofabuddhabicms.model.Chef;
 import org.progos.tasteofabuddhabicms.ui.ChefsFragment;
-import org.progos.tasteofabuddhabicms.ui.RestaurantsFragment;
 import org.progos.tasteofabuddhabicms.utility.Strings;
 
 import java.util.ArrayList;
@@ -33,7 +29,6 @@ public class ChefsAdapter extends RecyclerView.Adapter<ChefViewHolder> {
 
     private final View header;
     ArrayList<Chef> chefs;
-
     private Context context;
 
     public ChefsAdapter(Context context, View header, ArrayList<Chef> chefs) {
@@ -55,7 +50,7 @@ public class ChefsAdapter extends RecyclerView.Adapter<ChefViewHolder> {
         if (viewType == ITEM_VIEW_TYPE_HEADER) {
             return new ChefViewHolder(context, header);
         }
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_chefs, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_chefs, parent, false);
         return new ChefViewHolder(context, view);
     }
 
@@ -101,6 +96,4 @@ public class ChefsAdapter extends RecyclerView.Adapter<ChefViewHolder> {
     public int getItemCount() {
         return chefs.size() + 1;
     }
-
-
 }

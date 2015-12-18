@@ -57,7 +57,6 @@ public class RestaurantsFragment extends Fragment {
         uInit(view);
 
         restaurants = new ArrayList<>();
-        //restaurantsList.addItemDecoration(new MarginDecoration(this));
         restaurantsList.setHasFixedSize(true);
         final GridLayoutManager manager = new GridLayoutManager(context, 3);
         restaurantsList.setLayoutManager(manager);

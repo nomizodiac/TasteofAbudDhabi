@@ -38,9 +38,12 @@ public class ChefDetailsFragment extends Fragment {
         uInit(view);
 
         Chef chef = (Chef) getArguments().getSerializable(Strings.CHEF_OBJ);
-        chefName.setText(chef.getName());
+        chefName.setText(Html.fromHtml(chef.getName()).toString());
         chefDescription.setText(Html.fromHtml(Html.fromHtml(chef.getDescription()).toString()));
         chefDescription.setTypeface(FontFactory.getInstance().getFont(context, Commons.FONT_RALEWAY_MEDIUM));
+
+        if (chef.getName().contains("&"))
+            chefImg.setScaleType(ImageView.ScaleType.FIT_XY);
         Picasso.with(context).load(chef.getImageUrl()).into(chefImg);
 
         return view;

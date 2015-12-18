@@ -90,7 +90,6 @@ public class RestaurantDetailsFragment extends Fragment {
 
             ArrayList<RestaurantItem> restaurantItemArrayList = DataBaseHelper.getInstance(context).getRestaurantItems(restaurant);
             if (restaurantItemArrayList != null && !restaurantItemArrayList.isEmpty()) {
-
                 View header = LayoutInflater.from(context).inflate(R.layout.header_list_restaurant_details, restaurantDetailsList, false);
                 ImageView restaurantImg = (ImageView) header.findViewById(R.id.restaurantImg);
                 TextView greyBarTxt = (TextView) header.findViewById(R.id.greyBarTxt);
@@ -128,8 +127,6 @@ public class RestaurantDetailsFragment extends Fragment {
                 restaurantDetailsList.setVisibility(View.VISIBLE);
                 connectionLostLayout.setVisibility(View.GONE);
             }
-
-
         } else {
             connectionLostLayout.setVisibility(View.GONE);
             restaurantsListProgress.setVisibility(View.VISIBLE);
@@ -219,8 +216,8 @@ public class RestaurantDetailsFragment extends Fragment {
                 RestaurantDetailsSectionedAdapter mSectionedAdapter = new
                         RestaurantDetailsSectionedAdapter(context, R.layout.item_list_restaurant_details_section, R.id.section_text, adapter);
                 mSectionedAdapter.setSections(sections.toArray(dummy));
-
                 restaurantDetailsList.setAdapter(mSectionedAdapter);
+
 
                 DataBaseHelper.getInstance(context).addRestaurantItems(restaurantItems);
                 restaurant.setHasCat("true");
