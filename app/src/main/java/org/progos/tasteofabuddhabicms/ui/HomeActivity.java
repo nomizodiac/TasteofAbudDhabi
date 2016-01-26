@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -21,6 +22,8 @@ import org.progos.tasteofabuddhabicms.utility.Strings;
 import org.progos.tasteofabuddhabicms.utility.Utils;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private final String TAG = getClass().getSimpleName();
 
     Context context;
     RelativeLayout bottomBarLayout, fragmentsContainerLayout;
@@ -79,6 +82,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 loadFragment(Strings.FRAGMENT_VENUE_MAP);
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume" + getClass().getSimpleName());
     }
 
     private void loadFragment(String fragmentTag) {

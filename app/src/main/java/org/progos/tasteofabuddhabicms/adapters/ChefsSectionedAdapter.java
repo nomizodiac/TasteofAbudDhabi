@@ -1,6 +1,8 @@
 package org.progos.tasteofabuddhabicms.adapters;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,6 +14,7 @@ import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -143,7 +146,7 @@ public class ChefsSectionedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ImageView imageView = ((SectionViewHolder) sectionViewHolder).imageView;
             Picasso.with(mContext).load(chef.getImageUrl()).into(imageView);
 
-            sectionViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            /*sectionViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -164,7 +167,58 @@ public class ChefsSectionedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         }
                     }
                 }
+            });*/
+
+            imageView.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            ImageView view = (ImageView) v;
+                            //overlay is black with transparency of 0x77 (119)
+                            Drawable drawable = view.getDrawable();
+                            if (drawable != null) {
+                                drawable.setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
+                                view.invalidate();
+                            }
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP:
+                            if (mContext instanceof FragmentActivity) {
+                                FragmentManager fm = ((FragmentActivity) mContext).getSupportFragmentManager();
+                                FragmentTransaction ft = fm.beginTransaction();
+                                Fragment fragment = fm.findFragmentByTag(Strings.FRAGMENT_CHEFS);
+                                if (fragment instanceof ChefsFragment) {
+                                    ft.hide(fragment);
+                                    Bundle args = new Bundle();
+                                    args.putSerializable(Strings.CHEF_OBJ, chef);
+                                    ChefDetailsFragment chefDetailsFragment = new ChefDetailsFragment();
+                                    chefDetailsFragment.setArguments(args);
+                                    ft.add(R.id.fragmentsContainerLayout, chefDetailsFragment);
+                                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                                    ft.addToBackStack(null);
+                                    ft.commit();
+                                }
+                            }
+
+                        case MotionEvent.ACTION_CANCEL: {
+                            ImageView view = (ImageView) v;
+                            //clear the overlay
+                            Drawable drawable = view.getDrawable();
+                            if (drawable != null) {
+                                drawable.clearColorFilter();
+                                view.invalidate();
+                            }
+
+                            break;
+                        }
+                    }
+                    return true;
+                }
             });
+
 
         } else {
             mBaseAdapter.onBindViewHolder(sectionViewHolder, sectionedPositionToPosition(position));

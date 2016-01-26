@@ -1,6 +1,8 @@
 package org.progos.tasteofabuddhabicms.adapters;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,13 +10,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.progos.tasteofabuddhabicms.R;
+import org.progos.tasteofabuddhabicms.ui.ChefDetailsFragment;
+import org.progos.tasteofabuddhabicms.ui.ChefsFragment;
 import org.progos.tasteofabuddhabicms.ui.MenuFragment;
 import org.progos.tasteofabuddhabicms.ui.RestaurantDetailsFragment;
 import org.progos.tasteofabuddhabicms.model.Restaurant;
@@ -69,7 +75,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantViewHolde
         final String imgUrl = restaurant.getImgUrl();
         Picasso.with(context).load(imgUrl).into(holder.restaurantImg);
 
-        holder.restaurantImg.setOnClickListener(new View.OnClickListener() {
+        /*holder.restaurantImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -89,6 +95,56 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantViewHolde
                         ft.commit();
                     }
                 }
+            }
+        });*/
+
+        holder.restaurantImg.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ImageView view = (ImageView) v;
+                        //overlay is black with transparency of 0x77 (119)
+                        Drawable drawable = view.getDrawable();
+                        if (drawable != null) {
+                            drawable.setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
+                            view.invalidate();
+                        }
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP:
+                        if (context instanceof FragmentActivity) {
+                            Bundle args = new Bundle();
+                            args.putSerializable(Strings.RESTAURANT_OBJ, restaurant);
+                            RestaurantDetailsFragment restaurantDetailsFragment = new RestaurantDetailsFragment();
+                            restaurantDetailsFragment.setArguments(args);
+                            FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            Fragment fragment = fm.findFragmentByTag(Strings.FRAGMENT_RESTAURANTS);
+                            if (fragment instanceof RestaurantsFragment) {
+                                ft.hide(fragment);
+                                ft.add(R.id.fragmentsContainerLayout, restaurantDetailsFragment, Strings.FRAGMENT_RESTAURANT_DETAILS);
+                                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                                ft.addToBackStack(null);
+                                ft.commit();
+                            }
+                        }
+
+                    case MotionEvent.ACTION_CANCEL: {
+                        ImageView view = (ImageView) v;
+                        //clear the overlay
+                        Drawable drawable = view.getDrawable();
+                        if (drawable != null) {
+                            drawable.clearColorFilter();
+                            view.invalidate();
+                        }
+
+                        break;
+                    }
+                }
+                return true;
             }
         });
     }

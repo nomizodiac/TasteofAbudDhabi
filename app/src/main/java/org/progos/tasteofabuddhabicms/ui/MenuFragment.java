@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import org.progos.tasteofabuddhabicms.utility.Strings;
  * Created by NomBhatti on 11/25/2015.
  */
 public class MenuFragment extends Fragment implements View.OnClickListener {
+
+    private final String TAG = getClass().getSimpleName();
 
     Context context;
     TextView restaurantsBtn, venueMapBtn, scheduleBtn, chefsBtn, logoLbl;
@@ -41,38 +44,52 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
         if (fragment instanceof MenuFragment) {
             ft.hide(fragment);
         }
+        fm.executePendingTransactions();
 
         switch (v.getId()) {
 
             case R.id.restaurantsBtn:
-                ft.add(R.id.fragmentsContainerLayout, new RestaurantsFragment(), Strings.FRAGMENT_RESTAURANTS);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                Commons.STACK_IDENTIFIER_RESTAURANT_FRAGMENT = ft.commit();
+                if (fm.findFragmentByTag(Strings.FRAGMENT_RESTAURANTS) == null) {
+                    ft.add(R.id.fragmentsContainerLayout, new RestaurantsFragment(), Strings.FRAGMENT_RESTAURANTS);
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    ft.addToBackStack(null);
+                    Commons.STACK_IDENTIFIER_RESTAURANT_FRAGMENT = ft.commit();
+                }
                 break;
 
             case R.id.venueMapBtn:
-                ft.add(R.id.fragmentsContainerLayout, new VenueMapFragment(), Strings.FRAGMENT_VENUE_MAP);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                Commons.STACK_IDENTIFIER_VENUE_MAP_FRAGMENT = ft.commit();
+                if (fm.findFragmentByTag(Strings.FRAGMENT_VENUE_MAP) == null) {
+                    ft.add(R.id.fragmentsContainerLayout, new VenueMapFragment(), Strings.FRAGMENT_VENUE_MAP);
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    ft.addToBackStack(null);
+                    Commons.STACK_IDENTIFIER_VENUE_MAP_FRAGMENT = ft.commit();
+                }
                 break;
 
             case R.id.scheduleBtn:
-                ft.add(R.id.fragmentsContainerLayout, new ScheduleFragment(), Strings.FRAGMENT_SCHEDULE);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                Commons.STACK_IDENTIFIER_SCHEDULE_FRAGMENT = ft.commit();
+                if (fm.findFragmentByTag(Strings.FRAGMENT_SCHEDULE) == null) {
+                    ft.add(R.id.fragmentsContainerLayout, new ScheduleFragment(), Strings.FRAGMENT_SCHEDULE);
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    ft.addToBackStack(null);
+                    Commons.STACK_IDENTIFIER_SCHEDULE_FRAGMENT = ft.commit();
+                }
                 break;
 
             case R.id.chefsBtn:
-                ft.add(R.id.fragmentsContainerLayout, new ChefsFragment(), Strings.FRAGMENT_CHEFS);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                Commons.STACK_IDENTIFIER_CHEF_FRAGMENT = ft.commit();
+                if (fm.findFragmentByTag(Strings.FRAGMENT_CHEFS) == null) {
+                    ft.add(R.id.fragmentsContainerLayout, new ChefsFragment(), Strings.FRAGMENT_CHEFS);
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    ft.addToBackStack(null);
+                    Commons.STACK_IDENTIFIER_CHEF_FRAGMENT = ft.commit();
+                }
                 break;
         }
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume" + getClass().getSimpleName());
     }
 
     private void uInit(View view) {
